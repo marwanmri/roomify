@@ -28,6 +28,12 @@ const Upload = ({ onComplete }: UploadProps) => {
 
     const reader = new FileReader();
 
+    reader.onerror = () => {
+      setFile(null);
+      setProgress(0);
+      console.error("Error reading file");
+    };
+
     reader.onload = () => {
       const base64 = reader.result as string;
 
