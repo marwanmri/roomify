@@ -18,7 +18,8 @@ export default function Home() {
 
   const handleUploadComplete = async (base64: string) => {
     const newId = Date.now().toString();
-    navigate(`/visualizer/${newId}`, { state: { image: base64 } });
+    sessionStorage.setItem(`visualizer:${newId}`, base64);
+    navigate(`/visualizer/${newId}`);
   };
 
   return (

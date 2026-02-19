@@ -22,6 +22,14 @@ const Upload = ({ onComplete }: UploadProps) => {
 
   const processFile = (selectedFile: File) => {
     if (!isSignedIn) return;
+    if (!["image/jpeg", "image/png"].includes(selectedFile.type)) {
+      console.error("Unsupported file type");
+      return;
+    }
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      console.error("File exceeds 10MB limit");
+      return;
+    }
 
     setFile(selectedFile);
     setProgress(0);
