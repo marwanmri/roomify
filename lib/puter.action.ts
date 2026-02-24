@@ -72,7 +72,7 @@ export const createProject = async ({
   };
 
   try {
-    // call puter worker to store the project in kv
+    await puter.kv.set(`project:${projectId}`, payload);
     return payload;
   } catch (error) {
     console.log("Failed to create project", error);

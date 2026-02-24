@@ -20,6 +20,23 @@ export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([]);
 
+  const handleOpenProject = (
+    id: string,
+    name: string,
+    sourceImage: string,
+    renderedImage?: string | null,
+  ) => {
+    sessionStorage.setItem(
+      `visualizer:${id}`,
+      JSON.stringify({
+        initialImage: sourceImage,
+        initialRenderedImage: renderedImage || null,
+        name,
+      }),
+    );
+    navigate(`/visualizer/${id}`);
+  };
+
   const handleUploadComplete = async (base64: string) => {
     const newId = Date.now().toString();
     const name = `Residence ${newId}`;
@@ -38,7 +55,7 @@ export default function Home() {
       return false;
     }
 
-    setProjects((prev) => [newItem, ...prev]);
+    setProjects((prev) => [{ ...newItem, ...saved }, ...prev]);
 
     sessionStorage.setItem(
       `visualizer:${newId}`,
@@ -109,16 +126,26 @@ export default function Home() {
                 <div
                   key={id}
                   className="project-card group"
-                  onClick={() => {
-                    sessionStorage.setItem(
-                      `visualizer:${id}`,
-                      JSON.stringify({
-                        initialImage: sourceImage,
-                        initialRenderedImage: renderedImage || null,
-                        name,
-                      }),
-                    );
-                    navigate(`/visualizer/${id}`);
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    handleOpenProject(
+                      id,
+                      name ?? "",
+                      sourceImage,
+                      renderedImage,
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      if (e.key === " ") e.preventDefault();
+                      handleOpenProject(
+                        id,
+                        name ?? "",
+                        sourceImage,
+                        renderedImage,
+                      );
+                    }
                   }}
                   style={{ cursor: "pointer" }}
                 >

@@ -8,6 +8,9 @@ export default function Visualizer() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    setError(false);
+    setImage(null);
+
     if (!id) {
       setError(true);
       return;
