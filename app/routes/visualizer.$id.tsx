@@ -8,6 +8,9 @@ export default function Visualizer() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    setError(false);
+    setImage(null);
+
     if (!id) {
       setError(true);
       return;
@@ -20,7 +23,16 @@ export default function Visualizer() {
       return;
     }
 
-    setImage(stored);
+    try {
+      const parsed = JSON.parse(stored);
+      if (!parsed.initialImage) {
+        setError(true);
+        return;
+      }
+      setImage(parsed.initialImage);
+    } catch (e) {
+      setError(true);
+    }
   }, [id]);
 
   if (error) {
