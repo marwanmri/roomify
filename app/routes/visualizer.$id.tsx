@@ -11,7 +11,7 @@ export default function Visualizer() {
 
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const hasInitialGenerated = useRef(false);
+  const lastSeenId = useRef<string | null>(null);
 
   const handleBack = () => {
     navigate("/");
@@ -39,18 +39,18 @@ export default function Visualizer() {
         setError(true);
         return;
       }
-      if (hasInitialGenerated.current) {
+      if (lastSeenId.current === id) {
         return;
       }
       setImage(parsed.initialImage);
 
       if (parsed.initialRenderedImage) {
         setCurrentImage(parsed.initialRenderedImage);
-        hasInitialGenerated.current = true;
+        lastSeenId.current = id;
         return;
       }
 
-      hasInitialGenerated.current = true;
+      lastSeenId.current = id;
       runGeneration(parsed.initialImage);
     } catch (e) {
       setError(true);
@@ -76,7 +76,7 @@ export default function Visualizer() {
       const result = await generate3DView({ sourceImage: targetImage });
       if (result.renderedImage) {
         setCurrentImage(result.renderedImage);
-        hasInitialGenerated.current = true;
+        lastSeenId.current = id ?? null;
       }
     } catch (error) {
       console.error("Error generating 3D view:", error);
@@ -108,13 +108,13 @@ export default function Visualizer() {
             <div className="panel-action">
               <Button
                 size="sm"
-                onClick={() => {}}
+                onClick={undefined}
                 className="export"
                 disabled={!currentImage}
               >
                 <Download className="w-4 h-4 mr-2" /> Export
               </Button>
-              <Button size="sm" onClick={() => {}} className="share">
+              <Button size="sm" onClick={undefined} disabled className="share">
                 <Share className="w-4 h-4 mr-2" /> Share
               </Button>
             </div>
